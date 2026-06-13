@@ -17,3 +17,5 @@ self.addEventListener("fetch", event => {
     fetch(event.request).catch(() => caches.match("/offline.html"))
   );
 });
+
+

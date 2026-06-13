@@ -68,6 +68,25 @@ function getRandomText(textArray) {
     return textArray[randomIndex];
 }
 
+async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 3000 } = options;
+    
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+        const response = await fetch(resource, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+    } catch (error) {
+        clearTimeout(id);
+        throw error;
+    }
+}
+
 async function checkNet(){
     const resultElement = document.getElementById("result");
     const detailsElement = document.getElementById("details");
@@ -80,12 +99,12 @@ async function checkNet(){
         detailsElement.appendChild(siteStatus);
 
         try {
-            await fetch(site.url, { mode: "no-cors" });
+            await fetchWithTimeout(site.url, { mode: "no-cors", timeout: 3000 });
             okCount++;
             siteStatus.innerText = `🟢 ${site.name}: وصل شد`;
             siteStatus.style.color = "green";
         } catch (error) {
-            siteStatus.innerText = `🔴 ${site.name}: خطا در اتصال`;
+            siteStatus.innerText = `🔴 ${site.name}: خطا در اتصال (یا تایم‌اوت)`;
             siteStatus.style.color = "red";
         }
     }
@@ -97,7 +116,6 @@ async function checkNet(){
     }
 }
 
-// به محض آماده شدن DOM، بررسی اینترنت بدون نیاز به کلیک شروع می‌شود
 document.addEventListener("DOMContentLoaded", checkNet);
 </script>
 
