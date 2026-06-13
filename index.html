@@ -99,7 +99,7 @@ async function checkNet(){
         detailsElement.appendChild(siteStatus);
 
         try {
-            await fetchWithTimeout(site.url, { mode: "no-cors", timeout: 3000 });
+            await fetchWithTimeout(site.url, { mode: "no-cors", timeout: 30000 });
             okCount++;
             siteStatus.innerText = `🟢 ${site.name}: وصل شد`;
             siteStatus.style.color = "green";
