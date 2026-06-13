@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>نتا رو زدن؟</title>
+<style>
+body{
+    font-family:tahoma;
+    text-align:center;
+    margin-top:80px;
+}
+button{
+    padding:10px 20px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+}
+#result{
+    font-size:28px;
+    margin-top:30px;
+}
+</style>
+</head>
+<script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+<body>
+
+<h1>نتا رو زدن؟</h1>
+
+<button onclick="checkNet()">چک کن</button>
+
+<div id="result">...</div>
+
+<script>
+const sites = [
+ "https://www.google.com/favicon.ico",
+ "https://cloudflare.com/cdn-cgi/trace",
+ "https://www.wikipedia.org"
+];
+
+async function checkNet(){
+    let ok = 0;
+
+    await Promise.all(
+        sites.map(url =>
+            fetch(url,{mode:"no-cors"})
+            .then(()=> ok++)
+            .catch(()=>{})
+        )
+    );
+
+    const result = document.getElementById("result");
+
+    if(ok > 0){
+        result.innerText = "نه نزدن ✅";
+    }else{
+        result.innerText = "زدنننننن ❌";
+    }
+}
+</script>
+
+</body>
+</html>
